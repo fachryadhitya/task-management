@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { SignupInput, LoginInput, AuthPayload } from './dto/auth.dto';
+import { User, Role } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -12,15 +13,34 @@ export class AuthService {
     ) { }
 
     async signup(signupInput: SignupInput): Promise<AuthPayload> {
+
+        const isUserExists = await this.prisma.user.findUnique({ where: { email: signupInput.email } });
+        if (isUserExists) {
+            throw new UnauthorizedException('User already exists');
+        }
+
         const hashedPassword = await bcrypt.hash(signupInput.password, 10);
-        const user = await this.prisma.user.create({
+        const createdUser = await this.prisma.user.create({
             data: {
-                ...signupInput,
+                email: signupInput.email,
                 password: hashedPassword,
+                role: Role.USER, // Set default role
             },
         });
 
-        const token = this.jwtService.sign({ userId: user.id });
+        const token = this.jwtService.sign({ userId: createdUser.id });
+        console.log({
+            token,
+            createdUser,
+        });
+
+        // Create a new object that matches the User type
+        const user: User = {
+            id: createdUser.id,
+            email: createdUser.email,
+            role: createdUser.role as Role,
+        };
+
         return { token, user };
     }
 
@@ -36,10 +56,28 @@ export class AuthService {
         }
 
         const token = this.jwtService.sign({ userId: user.id });
-        return { token, user };
+
+        // Create a new object that matches the User type
+        const userWithoutPassword: User = {
+            id: user.id,
+            email: user.email,
+            role: user.role as Role,
+        };
+
+        return { token, user: userWithoutPassword };
     }
 
-    async validateUser(userId: number) {
-        return this.prisma.user.findUnique({ where: { id: userId } });
+    async validateUser(userId: number): Promise<User | null> {
+        const user = await this.prisma.user.findUnique({ where: { id: userId } });
+        if (!user) return null;
+
+        // Create a new object that matches the User type
+        const validatedUser: User = {
+            id: user.id,
+            email: user.email,
+            role: user.role as Role,
+        };
+
+        return validatedUser;
     }
 }

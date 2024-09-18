@@ -21,6 +21,6 @@ export class User {
     @Field(() => Role)
     role: Role;
 
-    @Field(() => [Task])
-    tasks: Task[];
+    @Field(() => [Task], { nullable: true })
+    tasks?: Task[];
 }

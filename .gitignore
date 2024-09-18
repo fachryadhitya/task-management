@@ -64,3 +64,4 @@ __snowpack__/
 .DS_Store
 
 .env
+dist/

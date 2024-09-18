@@ -2,15 +2,26 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TasksService {
     constructor(private prisma: PrismaService) { }
 
-    create(createTaskInput: CreateTaskInput) {
-        return this.prisma.task.create({
-            data: createTaskInput,
-        });
+    async create(createTaskInput: CreateTaskInput, userId: number) {
+        console.log('userId', userId);
+        const { dependencyId, ...taskData } = createTaskInput;
+
+        const data: Prisma.TaskCreateInput = {
+            ...taskData,
+            user: { connect: { id: userId } },
+        };
+
+        if (dependencyId) {
+            data.dependency = { connect: { id: dependencyId } };
+        }
+
+        return this.prisma.task.create({ data });
     }
 
     findAll() {

@@ -3,15 +3,15 @@ import { Status } from '../entities/task.entity';
 
 @InputType()
 export class CreateTaskInput {
-    @Field()
+    @Field(() => String)
     title: string;
 
-    @Field()
+    @Field(() => String)
     description: string;
 
     @Field(() => Status)
     status: Status;
 
     @Field(() => Int, { nullable: true })
-    dependencyId?: number;
+    dependencyId?: number | null;
 }
