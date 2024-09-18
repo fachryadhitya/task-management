@@ -1,0 +1,72 @@
+type Query {
+  tasks: [Task!]!
+  task(id: Int!): Task
+  readyTasks: [Task!]!
+}
+
+type Mutation {
+  createTask(input: CreateTaskInput!): Task!
+  updateTask(id: Int!, input: UpdateTaskInput!): Task!
+  deleteTask(id: Int!): Boolean!
+  signup(input: SignupInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload!
+}
+
+type Task {
+  id: Int!
+  title: String!
+  description: String!
+  status: Status!
+  dependency: Task
+  createdAt: DateTime!
+  user: User!
+}
+
+type User {
+  id: Int!
+  email: String!
+  role: Role!
+  tasks: [Task!]!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+input CreateTaskInput {
+  title: String!
+  description: String!
+  status: Status!
+  dependencyId: Int
+}
+
+input UpdateTaskInput {
+  title: String
+  description: String
+  status: Status
+  dependencyId: Int
+}
+
+input SignupInput {
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+enum Status {
+  OPEN
+  IN_PROGRESS
+  DONE
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+scalar DateTime
