@@ -9,7 +9,6 @@ export class TasksService {
     constructor(private prisma: PrismaService) { }
 
     async create(createTaskInput: CreateTaskInput, userId: number) {
-        console.log('userId', userId);
         const { dependencyId, ...taskData } = createTaskInput;
 
         const data: Prisma.TaskCreateInput = {
@@ -43,10 +42,15 @@ export class TasksService {
         });
     }
 
-    remove(id: number) {
-        return this.prisma.task.delete({
-            where: { id },
-        });
+    async remove(id: number) {
+        try {
+            await this.prisma.task.delete({
+                where: { id },
+            });
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 
     findReadyTasks() {

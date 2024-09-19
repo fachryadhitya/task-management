@@ -18,7 +18,7 @@ async function main() {
 
     console.log({ admin });
 
-    // Create some initial tasks
+    // Seeded some initial tasks
     const task1 = await prisma.task.create({
         data: {
             title: 'Setup project',

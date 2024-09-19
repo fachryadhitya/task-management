@@ -24,17 +24,13 @@ export class AuthService {
             data: {
                 email: signupInput.email,
                 password: hashedPassword,
-                role: Role.USER, // Set default role
+                role: signupInput.role || Role.USER,
             },
         });
 
         const token = this.jwtService.sign({ userId: createdUser.id });
-        console.log({
-            token,
-            createdUser,
-        });
 
-        // Create a new object that matches the User type
+
         const user: User = {
             id: createdUser.id,
             email: createdUser.email,
@@ -57,7 +53,6 @@ export class AuthService {
 
         const token = this.jwtService.sign({ userId: user.id });
 
-        // Create a new object that matches the User type
         const userWithoutPassword: User = {
             id: user.id,
             email: user.email,
@@ -71,7 +66,6 @@ export class AuthService {
         const user = await this.prisma.user.findUnique({ where: { id: userId } });
         if (!user) return null;
 
-        // Create a new object that matches the User type
         const validatedUser: User = {
             id: user.id,
             email: user.email,

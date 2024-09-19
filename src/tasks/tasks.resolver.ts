@@ -31,7 +31,6 @@ export class TasksResolver {
         @Args('createTaskInput') createTaskInput: CreateTaskInput,
         @CurrentUser() user: User
     ) {
-        console.log('current user', user);
 
         return this.tasksService.create(createTaskInput, user.id);
     }
