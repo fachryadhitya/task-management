@@ -5,6 +5,7 @@ This is a NestJS GraphQL API for task management. Follow these steps to test all
 ## Prerequisites
 
 - Node.js and npm installed
+- Node version: >= 20
 
 ## How to run
 
