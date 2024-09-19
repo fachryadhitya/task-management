@@ -10,6 +10,9 @@ This is a NestJS GraphQL API for task management. Follow these steps to test all
 ## How to run
 
 1. Install dependencies:
+```
+npm install
+```    
 2. Set up environment variables:
 - Copy the contents of `.env.example` to a new file named `.env`:
   ```
