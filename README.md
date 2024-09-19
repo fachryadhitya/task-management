@@ -8,9 +8,46 @@ This is a NestJS GraphQL API for task management. Follow these steps to test all
 
 ## How to run
 
-- Run `npm install` to install the dependencies
-- Run `npm run start:dev` to start the server
-- Open `http://localhost:5500/graphql` to access the GraphQL Playground
+1. Install dependencies:
+2. Set up environment variables:
+- Copy the contents of `.env.example` to a new file named `.env`:
+  ```
+  cp .env.example .env
+  ```
+- For quick setup, you can use the dummy database credentials provided in `.env.example`. These are suitable for development purposes.
+
+3. Start the server: 
+```
+npm run start:dev
+```
+
+4. Access the GraphQL Playground:
+Open `http://localhost:5500/graphql` in your web browser.
+
+### Using custom database credentials
+
+If you want to use your own database:
+
+1. Open the `.env` file.
+2. Replace the `DATABASE_URL` value with your own PostgreSQL connection string:
+
+```
+DATABASE_URL="" #The Transaction connection pooler string
+DIRECT_URL=""  #The Session connection pooler string
+```
+3. Save the file.
+4. Run Prisma migrations to set up your new database:
+
+```
+npx prisma migrate dev --name init
+```
+5. Restart the server for the changes to take effect:
+```
+npm run start:dev
+```
+
+Note: Ensure your PostgreSQL server is running and the database specified in the connection string exists before running migrations and starting the application.
+
 
 ## Testing Endpoints
 
@@ -30,10 +67,11 @@ Expected result: "OK"
 ### 2. User Registration
 
 ```
-mutation {
+mutation SignUp {
   signup(input: {
-    email: "test@example.com"
+    email: "user@example.com"
     password: "password123"
+    role: ADMIN
   }) {
     token
     user {
@@ -79,6 +117,7 @@ mutation {
     title: "Test Task"
     description: "This is a test task"
     status: OPEN
+    dependencyId: 1 | null
   }) {
     id
     title
@@ -120,7 +159,8 @@ query {
 
 ```
 mutation {
-  updateTask(id: 1, updateTaskInput: {
+  updateTask(id: 1, input: {
+    id: 1
     status: IN_PROGRESS
     description: "Updated description"
   }) {
