@@ -30,7 +30,7 @@ Open `http://localhost:5500/graphql` in your web browser.
 
 ### Using custom database credentials
 
-If you want to use your own database:
+If you want to use your own database (I used Supabase for my postgres link above):
 
 1. Open the `.env` file.
 2. Replace the `DATABASE_URL` value with your own PostgreSQL connection string:
